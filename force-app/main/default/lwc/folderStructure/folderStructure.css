@@ -1,0 +1,52 @@
+tr.hovered td {
+    background-color: #f3f3f3;
+}
+
+.row-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.padding-left-level0 {
+    padding-left: 0;
+}
+
+.padding-left-level1 {
+    padding-left: 1em;
+}
+
+.padding-left-level2 {
+    padding-left: 2em;
+}
+
+.padding-left-level3 {
+    padding-left: 3em;
+}
+
+.padding-left-level4 {
+    padding-left: 4em;
+}
+
+.expand-cell {
+    display: flex;
+}
+
+
+.structure-table-padding-bottom {
+    padding-bottom: 50px;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    gap: 20px;
+    width: 100%;
+    background: #f3f3f3;
+    z-index: 1;
+    font-size: small;
+}

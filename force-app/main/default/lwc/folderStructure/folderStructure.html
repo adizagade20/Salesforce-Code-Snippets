@@ -1,0 +1,247 @@
+<template>
+    <template lwc:if={showSpinner}>
+        <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+    </template>
+
+    <lightning-card variant="narrow">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-no-row-hover structure-table">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <!-- <th scope="col" style="width: 15%"></th> -->
+                    <th scope="col" style="width: 35%">Name</th>
+                    <th scope="col" style="width: 55%">Description</th>
+                    <th scope="col" style="width: 10%"></th>
+                    <!-- <th scope="col" style="width: 10%"></th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={data} for:item="property">
+                    <tr if:true={property.isVisible} class="slds-hint-parent table-rows" key={property.propertyIndex} data-row-type="property" data-property-index={property.propertyIndex}>
+                        <template if:true={property.id}>
+                            <td scope="row">
+                                <div class="expand-cell ">
+                                    <div class={propertyPaddingClass}>
+                                        <lightning-icon if:true={property.isExpanded} icon-name="utility:chevrondown" size="x-small" onclick={handleExpandClick}
+                                            data-property-index={property.propertyIndex}></lightning-icon>
+                                        <lightning-icon if:false={property.isExpanded} icon-name="utility:chevronright" size="x-small" onclick={handleExpandClick}
+                                            data-property-index={property.propertyIndex}></lightning-icon>
+                                    </div>
+                                    <div class="slds-var-p-left_medium">{property.name}</div>
+                                </div>
+                            </td>
+                            <td scope="row">{property.description}</td>
+                            <td scope="row" class="slds-text-align_center">
+                                <div class="row-flex">
+                                    <lightning-button-icon variant="border-filled" icon-name="utility:add" size="small" onclick={handleRowAction} data-action="add"
+                                        data-property-index={property.propertyIndex}>
+                                        <label>Add Building</label>
+                                    </lightning-button-icon>
+                                    <lightning-button-icon variant="border-filled" icon-name="utility:delete" size="small" onclick={handleRowAction} data-action="delete"
+                                        data-property-index={property.propertyIndex}>
+                                        <label>Delete Property</label>
+                                    </lightning-button-icon>
+                                    <lightning-button-icon if:true={property.id} variant="border-filled" icon-name="utility:preview" size="small" onclick={handleRowAction} data-action="preview"
+                                        data-id={property.id}>
+                                        <label>Preview</label>
+                                    </lightning-button-icon>
+                                    <lightning-button-icon if:false={property.id} icon-name="utility:preview" size="small" style="visibility: hidden">
+                                        <label>Preview</label>
+                                    </lightning-button-icon>
+                                </div>
+                            </td>
+                        </template>
+                        <template if:false={property.id}></template>
+                    </tr>
+
+                    <template if:true={property.isExpanded}>
+                        <template if:true={property.buildings}>
+                            <template for:each={property.buildings} for:item="building">
+                                <tr if:true={building.isVisible} class="slds-hint-parent table-rows" key={building.buildingIndex} data-row-type="building" data-property-index={property.propertyIndex}
+                                    data-building-index={building.buildingIndex}>
+                                    <template if:true={building.id}>
+                                        <td scope="row">
+                                            <div class="expand-cell">
+                                                <div class={buildingPaddingClass}>
+                                                    <lightning-icon if:true={building.isExpanded} icon-name="utility:chevrondown" size="x-small" onclick={handleExpandClick} data-action="add"
+                                                        data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}></lightning-icon>
+                                                    <lightning-icon if:false={building.isExpanded} icon-name="utility:chevronright" size="x-small" onclick={handleExpandClick} data-action="delete"
+                                                        data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}></lightning-icon>
+                                                </div>
+                                                <div class="slds-var-p-left_medium">{building.name}</div>
+                                            </div>
+                                        </td>
+                                        <td scope="row">{building.description}</td>
+                                    </template>
+                                    <template if:false={building.id}>
+                                        <td scope="row">
+                                            <div class="expand-cell slds-var-p-left_large">
+                                                <div class={buildingPaddingClass}>
+                                                    <lightning-input type="text" variant="label-hidden" name="name" onchange={handleInput} value={building.name}
+                                                        data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}></lightning-input>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td scope="row">
+                                            <lightning-input type="text" variant="label-hidden" name="description" onchange={handleInput} value={building.description}
+                                                data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}></lightning-input>
+                                        </td>
+                                    </template>
+                                    <td scope="row" class="slds-text-align_center">
+                                        <div class="row-flex">
+                                            <lightning-button-icon variant="border-filled" icon-name="utility:add" size="small" onclick={handleRowAction} data-action="add"
+                                                data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}>
+                                                <label>Add Floor</label>
+                                            </lightning-button-icon>
+                                            <lightning-button-icon variant="border-filled" icon-name="utility:delete" size="small" onclick={handleRowAction} data-action="delete"
+                                                data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}>
+                                                <label>Delete Building</label>
+                                            </lightning-button-icon>
+                                            <lightning-button-icon if:true={building.id} variant="border-filled" icon-name="utility:preview" size="small" onclick={handleRowAction}
+                                                data-action="preview" data-id={building.id}>
+                                                <label>Preview</label>
+                                            </lightning-button-icon>
+                                            <lightning-button-icon if:false={building.id} icon-name="utility:preview" size="small" style="visibility: hidden">
+                                                <label>Preview</label>
+                                            </lightning-button-icon>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <template if:true={building.isExpanded}>
+                                    <template if:true={building.floors}>
+                                        <template for:each={building.floors} for:item="floor">
+                                            <tr if:true={floor.isVisible} class="slds-hint-parent table-rows" key={floor.floorIndex} data-row-type="floor" data-property-index={property.propertyIndex}
+                                                data-building-index={building.buildingIndex} data-floor-index={floor.floorIndex}>
+                                                <template if:true={floor.id}>
+                                                    <td scope="row">
+                                                        <div class="expand-cell">
+                                                            <div class={floorPaddingClass}>
+                                                                <lightning-icon if:true={floor.isExpanded} icon-name="utility:chevrondown" size="x-small" onclick={handleExpandClick}
+                                                                    data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}
+                                                                    data-floor-index={floor.floorIndex}></lightning-icon>
+                                                                <lightning-icon if:false={floor.isExpanded} icon-name="utility:chevronright" size="x-small" onclick={handleExpandClick}
+                                                                    data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}
+                                                                    data-floor-index={floor.floorIndex}></lightning-icon>
+                                                            </div>
+                                                            <div class="slds-var-p-left_medium">{floor.name}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td scope="row">{floor.description}</td>
+                                                </template>
+                                                <template if:false={floor.id}>
+                                                    <td scope="row">
+                                                        <div class="expand-cell slds-var-p-left_large">
+                                                            <div class={floorPaddingClass}>
+                                                                <lightning-input type="text" variant="label-hidden" name="name" onchange={handleInput} value={floor.name}
+                                                                    data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}
+                                                                    data-floor-index={floor.floorIndex}></lightning-input>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td scope="row">
+                                                        <lightning-input type="text" variant="label-hidden" name="description" onchange={handleInput} value={floor.description}
+                                                            data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}
+                                                            data-floor-index={floor.floorIndex}></lightning-input>
+                                                    </td>
+                                                </template>
+                                                <td scope="row" class="slds-text-align_center">
+                                                    <div class="row-flex">
+                                                        <lightning-button-icon variant="border-filled" icon-name="utility:add" size="small" onclick={handleRowAction} data-action="add"
+                                                            data-property-index={property.propertyIndex} data-building-index={building.buildingIndex} data-floor-index={floor.floorIndex}>
+                                                            <label>Add Unit</label>
+                                                        </lightning-button-icon>
+                                                        <lightning-button-icon variant="border-filled" icon-name="utility:delete" size="small" onclick={handleRowAction} data-action="delete"
+                                                            data-property-index={property.propertyIndex} data-building-index={building.buildingIndex} data-floor-index={floor.floorIndex}>
+                                                            <label>Delete Floor</label>
+                                                        </lightning-button-icon>
+                                                        <lightning-button-icon if:true={floor.id} variant="border-filled" icon-name="utility:preview" size="small" onclick={handleRowAction}
+                                                            data-action="preview" data-id={floor.id}>
+                                                            <label>Preview</label>
+                                                        </lightning-button-icon>
+                                                        <lightning-button-icon if:false={floor.id} variant="border-filled" icon-name="utility:add" size="small" style="visibility: hidden">
+                                                            <label>Preview</label>
+                                                        </lightning-button-icon>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <template if:true={floor.isExpanded}>
+                                                <template if:true={floor.units}>
+                                                    <template for:each={floor.units} for:item="unit">
+                                                        <tr if:true={unit.isVisible} class="slds-hint-parent table-rows" key={unit.unitIndex} data-row-type="unit"
+                                                            data-property-index={property.propertyIndex} data-building-index={building.buildingIndex} data-floor-index={floor.floorIndex}
+                                                            data-unit-index={unit.unitIndex}>
+                                                            <template if:true={unit.id}>
+                                                                <td scope="row">
+                                                                    <div class="expand-cell">
+                                                                        <div class={unitPaddingClass} style="visibility: hidden">
+                                                                            <lightning-icon if:true={building.isExpanded} icon-name="utility:chevrondown" size="x-small" onclick={handleExpandClick}
+                                                                                data-action="add" data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}
+                                                                                data-floor-index={floor.floorIndex} data-unit-index={unit.unitIndex}></lightning-icon>
+                                                                            <lightning-icon if:false={building.isExpanded} icon-name="utility:chevronright" size="x-small" onclick={handleExpandClick}
+                                                                                data-action="delete" data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}
+                                                                                data-floor-index={floor.floorIndex} data-unit-index={unit.unitIndex}></lightning-icon>
+                                                                        </div>
+                                                                        <div class="slds-var-p-left_medium">{unit.name}</div>
+                                                                    </div>
+                                                                </td>
+                                                                <td scope="row">{unit.description}</td>
+                                                            </template>
+                                                            <template if:false={unit.id}>
+                                                                <td scope="row">
+                                                                    <div class="expand-cell slds-var-p-left_large">
+                                                                        <div class={unitPaddingClass}>
+                                                                            <lightning-input type="text" variant="label-hidden" name="name" onchange={handleInput} value={unit.name}
+                                                                                data-property-index={property.propertyIndex} data-building-index={building.buildingIndex}
+                                                                                data-floor-index={floor.floorIndex} data-unit-index={unit.unitIndex}></lightning-input>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td scope="row">
+                                                                    <lightning-input type="text" variant="label-hidden" name="description" onchange={handleInput} value={unit.description}
+                                                                        data-property-index={property.propertyIndex} data-building-index={building.buildingIndex} data-floor-index={floor.floorIndex}
+                                                                        data-unit-index={unit.unitIndex}></lightning-input>
+                                                                </td>
+                                                            </template>
+                                                            <td scope="row" class="slds-text-align_center">
+                                                                <div class="row-flex">
+                                                                    <lightning-button-icon style="visibility: hidden" variant="border-filled" icon-name="utility:add" size="small" data-action="add"
+                                                                        data-property-index={property.propertyIndex} data-building-index={building.buildingIndex} data-floor-index={floor.floorIndex}
+                                                                        data-unit-index={unit.unitIndex}>
+                                                                        <label>Add Unit</label>
+                                                                    </lightning-button-icon>
+                                                                    <lightning-button-icon variant="border-filled" icon-name="utility:delete" size="small" data-action="delete"
+                                                                        data-property-index={property.propertyIndex} data-building-index={building.buildingIndex} data-floor-index={floor.floorIndex}
+                                                                        data-unit-index={unit.unitIndex}>
+                                                                        <label>Delete Unit</label>
+                                                                    </lightning-button-icon>
+                                                                    <lightning-button-icon if:true={unit.id} variant="border-filled" icon-name="utility:preview" size="small" data-action="preview"
+                                                                        onclick={handleRowAction} data-id={unit.id}>
+                                                                        <label>Preview</label>
+                                                                    </lightning-button-icon>
+                                                                    <lightning-button-icon if:false={unit.id} icon-name="utility:preview" size="small" style="visibility: hidden">
+                                                                        <label>Preview</label>
+                                                                    </lightning-button-icon>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </template>
+                                            </template>
+                                        </template>
+                                    </template>
+                                </template>
+                            </template>
+                        </template>
+                    </template>
+                </template>
+            </tbody>
+        </table>
+
+        <div class="footer slds-hide">
+            <lightning-button variant="neutral" label="Cancel" onclick={handleCancel}></lightning-button>
+            <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button>
+        </div>
+
+    </lightning-card>
+</template>
